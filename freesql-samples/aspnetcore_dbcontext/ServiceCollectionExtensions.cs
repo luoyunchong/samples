@@ -1,23 +1,19 @@
-﻿using FreeSql;
+﻿using aspnetcore_dbcontext.Data;
+using aspnetcore_dbcontext.Models;
+using FreeSql;
 using FreeSql.Internal;
-using IGeekFan.FreeKit.Extras.FreeSql;
 
-namespace aspnetcore_repository
+namespace aspnetcore_dbcontext
 {
     public static class ServiceCollectionExtensions
     {
         public static IServiceCollection AddFreeSql(this IServiceCollection services, IConfiguration c)
         {
-            services.Configure<UnitOfWorkDefualtOptions>(r =>
-            {
-                r.IsolationLevel = System.Data.IsolationLevel.ReadCommitted;
-                r.Propagation = Propagation.Required;
-            });
 
             Func<IServiceProvider, IFreeSql> fsql = r =>
             {
                 IFreeSql fsql = new FreeSqlBuilder()
-                    .UseConnectionString(c)
+                    .UseConnectionString(DataType.Sqlite,c.GetConnectionString("Sqlite"))
 #if DEBUG
                     .UseAutoSyncStructure(true)
 #endif
@@ -29,10 +25,21 @@ namespace aspnetcore_repository
                     ).Build();
                 return fsql;
             };
-
             services.AddSingleton(fsql);
 
-            services.AddFreeKitCore();
+            //在项目启动时，从容器中获取IFreeSql实例，并执行一些操作：同步表，种子数据,FluentAPI等
+            using IServiceScope serviceScope = services.BuildServiceProvider().CreateScope();
+            var free = serviceScope.ServiceProvider.GetRequiredService<IFreeSql>();
+
+            free.SetDbContextOptions(opt => {
+                opt.OnEntityChange = report => {
+                    Console.WriteLine(report);
+                };
+            });
+
+            free.CodeFirst.SyncStructure(typeof(Todo));//Todo 为要同步的实体类
+            free.CodeFirst.SyncStructure(typeof(DbContext.EntityChangeReport.ChangeInfo));//Todo 为要同步的实体类
+            services.AddFreeDbContext<TodoDbContext>(options => options.UseFreeSql(free));
 
             return services;
         }

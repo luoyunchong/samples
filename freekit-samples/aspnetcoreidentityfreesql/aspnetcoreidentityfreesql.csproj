@@ -6,14 +6,14 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="FreeSql.Provider.MySqlConnector" Version="3.2.666-preview20220818" />
-		<PackageReference Include="FreeSql.Provider.Sqlite" Version="3.2.666-preview20220818" />
-		<PackageReference Include="FreeSql.Provider.SqlServer" Version="3.2.666-preview20220818" />
-		<PackageReference Include="IGeekFan.AspNetCore.Identity.FreeSql" Version="0.0.510" />
-		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.7" />
-		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.7" />
+		<PackageReference Include="FreeSql.Provider.MySqlConnector" Version="3.2.666" />
+		<PackageReference Include="FreeSql.Provider.Sqlite" Version="3.2.666" />
+		<PackageReference Include="FreeSql.Provider.SqlServer" Version="3.2.666" />
+		<PackageReference Include="IGeekFan.AspNetCore.Identity.FreeSql" Version="0.0.515" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.8" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.8" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.8" />
-		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.7" />
+		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.8" />
 	</ItemGroup>
 	<ItemGroup>
 	  <Folder Include="wwwroot\lib\" />

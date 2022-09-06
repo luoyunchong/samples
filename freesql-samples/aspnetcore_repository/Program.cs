@@ -4,7 +4,6 @@ using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using IGeekFan.FreeKit.Extras.Dependency;
 using IGeekFan.FreeKit.Extras.FreeSql;
-using IGeekFan.FreeKit.Extras.Security;
 
 var builder = WebApplication.CreateBuilder(args);
 var c = builder.Configuration;

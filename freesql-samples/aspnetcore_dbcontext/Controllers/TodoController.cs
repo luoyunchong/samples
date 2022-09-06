@@ -1,26 +1,23 @@
-using aspnetcore_repository.DTO;
-using aspnetcore_repository.Models;
+using aspnetcore_dbcontext.Data;
+using aspnetcore_dbcontext.DTO;
+using aspnetcore_dbcontext.Models;
 using FreeSql.Internal.Model;
-using IGeekFan.FreeKit.Extras.FreeSql;
 using Microsoft.AspNetCore.Mvc;
 
-namespace aspnetcore_repository.Controllers
+namespace aspnetcore_dbcontext.Controllers
 {
-    /// <summary>
-    /// 2.基于审计类的FreeSql仓储
-    /// </summary>
     [ApiController]
-    //[Authorize]
     [Route("[controller]")]
     public class TodoController : ControllerBase
     {
-        private readonly IAuditBaseRepository<Todo, int> _repository;
-        private readonly ILogger<TodoController> _logger;
 
-        public TodoController(ILogger<TodoController> logger, IAuditBaseRepository<Todo, int> repository)
+        private readonly ILogger<TodoController> _logger;
+        private readonly TodoDbContext _dbContext;
+
+        public TodoController(ILogger<TodoController> logger, TodoDbContext dbContext)
         {
             _logger = logger;
-            _repository = repository;
+            _dbContext = dbContext;
         }
 
         /// <summary>
@@ -31,7 +28,7 @@ namespace aspnetcore_repository.Controllers
         [HttpGet]
         public async Task<IResult> GetPageAsync([FromQuery] BasePagingInfo pagingInfo)
         {
-            List<Todo> data = await _repository.Select.Page(pagingInfo).ToListAsync();
+            List<Todo> data = await _dbContext.Todos.Select.Page(pagingInfo).ToListAsync();
 
             return Results.Ok(new { data = data, count = pagingInfo.Count });
         }
@@ -43,9 +40,10 @@ namespace aspnetcore_repository.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("{id}")]
-        public IResult Get(int id)
+        public async Task<IResult> GetAsync(long id)
         {
-            Todo todo = _repository.Get(id);
+            Todo todo = await _dbContext.Todos.Select.WhereDynamic(id).FirstAsync();
+            Todo todo2 = await _dbContext.Todos.Select.Where(r => r.Id == id).FirstAsync();
             _logger.LogInformation($"Todo get success");
             return Results.Ok(todo);
         }
@@ -56,10 +54,12 @@ namespace aspnetcore_repository.Controllers
         /// <param name="createTodo"></param>
         /// <returns></returns>
         [HttpPost]
-        public IResult Create([FromBody] CreateTodo createTodo)
+        public async Task<IResult> CreateAsync([FromBody] CreateTodo createTodo)
         {
             Todo todo = new Todo { IsDone = createTodo.IsDone, Message = createTodo.Message, NotifictionTime = createTodo.NotifictionTime };
-            _repository.Insert(todo);
+            await _dbContext.Todos.AddAsync(todo);
+            await _dbContext.SaveChangesAsync();
+
             _logger.LogInformation($"todo crate success");
             return Results.Ok(todo);
         }
@@ -70,9 +70,9 @@ namespace aspnetcore_repository.Controllers
         /// <param name="updateTodo"></param>
         /// <returns></returns>
         [HttpPut]
-        public IResult Update([FromBody] UpdateTodo updateTodo)
+        public async Task<IResult> UpdateAsync([FromBody] UpdateTodo updateTodo)
         {
-            Todo todo = _repository.Get(updateTodo.Id);
+            Todo todo = await _dbContext.Todos.Where(r => r.Id == updateTodo.Id).FirstAsync();
             if (todo == null)
             {
                 return Results.BadRequest($"to do id {updateTodo.Id} not found.");
@@ -80,7 +80,10 @@ namespace aspnetcore_repository.Controllers
             todo.Message = updateTodo.Message;
             todo.IsDone = updateTodo.IsDone;
             todo.NotifictionTime = updateTodo.NotifictionTime;
-            _repository.Update(todo);
+
+            await _dbContext.Todos.UpdateAsync(todo);
+            await _dbContext.SaveChangesAsync();
+
             _logger.LogInformation($"todo update success");
             return Results.Ok(todo);
         }
@@ -91,11 +94,17 @@ namespace aspnetcore_repository.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete]
-        public IResult Delete(int id)
+        public async Task<IResult> Delete(int id)
         {
-            int row = _repository.Delete(id);
+            Todo todo = await _dbContext.Todos.Where(r => r.Id == id).FirstAsync();
+            _dbContext.Todos.Remove(todo);
+            await _dbContext.SaveChangesAsync();
+
+            //await _dbContext.Todos.RemoveAsync(r => r.Id == id);
+            //await _dbContext.SaveChangesAsync();
+
             _logger.LogInformation($"todo delete success");
-            return Results.Ok(row);
+            return Results.Ok(1);
         }
     }
 }

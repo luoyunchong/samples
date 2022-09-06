@@ -1,5 +1,8 @@
 ﻿// See https://aka.ms/new-console-template for more information
+
 using Microsoft.Extensions.Logging;
+
+namespace console_di;
 
 internal class App
 {
