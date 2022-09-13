@@ -86,6 +86,7 @@ namespace aspnetcore_dbcontext.Controllers
             }
             todo.Message = updateTodo.Message;
             todo.IsDone = updateTodo.IsDone;
+            if (todo.IsDone) todo.DoneTime = DateTime.Now;
             todo.NotifictionTime = updateTodo.NotifictionTime;
 
             await _dbContext.Todos.UpdateAsync(todo);

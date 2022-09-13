@@ -49,7 +49,7 @@ namespace aspnetcore_repository.Controllers
         [HttpGet("{id}")]
         public async Task<IResult> GetAsync(int id)
         {
-            Todo todo =await _repository.GetAsync(id);
+            Todo todo = await _repository.GetAsync(id);
             _logger.LogInformation($"Todo get success");
             return Results.Ok(todo);
         }
@@ -76,13 +76,14 @@ namespace aspnetcore_repository.Controllers
         [HttpPut]
         public async Task<IResult> Update([FromBody] UpdateTodo updateTodo)
         {
-            Todo todo = _repository.Get(updateTodo.Id);
+            Todo todo = await _repository.GetAsync(updateTodo.Id);
             if (todo == null)
             {
                 return Results.BadRequest($"to do id {updateTodo.Id} not found.");
             }
             todo.Message = updateTodo.Message;
             todo.IsDone = updateTodo.IsDone;
+            if (todo.IsDone) todo.DoneTime = DateTime.Now;
             todo.NotifictionTime = updateTodo.NotifictionTime;
             await _repository.UpdateAsync(todo);
             _logger.LogInformation($"todo update success");
@@ -97,7 +98,7 @@ namespace aspnetcore_repository.Controllers
         [HttpDelete]
         public async Task<IResult> Delete(int id)
         {
-            int row =await _repository.DeleteAsync(id);
+            int row = await _repository.DeleteAsync(id);
             _logger.LogInformation($"todo delete success");
             return Results.Ok(row);
         }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using winforms_netframework.Models;
 
@@ -6,6 +7,7 @@ namespace winforms_netframework
 {
     public partial class Form1 : Form
     {
+        private readonly IFreeSql _fsql = DB.Sqlite;
         public Form1()
         {
 
@@ -17,8 +19,7 @@ namespace winforms_netframework
 
         private void GetTodoList()
         {
-            var fsql = DB.Sqlite;
-            var tolist = fsql.Select<Todo>().ToList();
+            var tolist = _fsql.Select<Todo>().Where(u => !u.IsDone).ToList();
             checkedListTodo.Items.Clear();
             foreach (var item in tolist)
             {
@@ -26,7 +27,16 @@ namespace winforms_netframework
             }
         }
 
-        private void btnAdd_Click(object sender, System.EventArgs e)
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            SaveInsert();
+        }
+
+        private void btnUpdate_Click(object sender, EventArgs e)
+        {
+            SaveUpdate();
+        }
+        private void SaveInsert()
         {
             string message = txtBoxTodo.Text.Trim();
             if (string.IsNullOrWhiteSpace(message))
@@ -34,7 +44,10 @@ namespace winforms_netframework
                 MessageBox.Show("请输入待办事项", "提示", MessageBoxButtons.OK);
                 return;
             }
-            DateTime? notifictionTime = string.IsNullOrWhiteSpace(dateNotifictionTime.Text) && dateNotifictionTime.Checked ? (DateTime?)null : DateTime.Parse(dateNotifictionTime.Text);
+            DateTime? notifictionTime =
+                !string.IsNullOrWhiteSpace(dateNotifictionTime.Text) && dateNotifictionTime.Checked
+                    ? DateTime.Parse(dateNotifictionTime.Text)
+                    : (DateTime?)null;
 
             var todo = new Todo()
             {
@@ -44,32 +57,39 @@ namespace winforms_netframework
                 CreateTime = DateTime.Now
             };
 
-            var fsql = DB.Sqlite;
-            fsql.Insert<Todo>(todo).ExecuteAffrows();
+
+            _fsql.Insert<Todo>(todo).ExecuteAffrows();
             GetTodoList();
             MessageBox.Show("保存成功");
         }
 
-        private void btnUpdate_Click(object sender, EventArgs e)
+        private void SaveUpdate()
         {
+            string id = hideId.Text.ToString();
             string message = txtBoxTodo.Text.Trim();
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                MessageBox.Show("请选中一个待办事项后再修改", "提示", MessageBoxButtons.OK);
+            }
             if (string.IsNullOrWhiteSpace(message))
             {
                 MessageBox.Show("请输入待办事项", "提示", MessageBoxButtons.OK);
                 return;
             }
-            DateTime? notifictionTime = string.IsNullOrWhiteSpace(dateNotifictionTime.Text) && dateNotifictionTime.Checked ? (DateTime?)null : DateTime.Parse(dateNotifictionTime.Text);
+            DateTime? notifictionTime =
+                !string.IsNullOrWhiteSpace(dateNotifictionTime.Text) && dateNotifictionTime.Checked
+                    ? DateTime.Parse(dateNotifictionTime.Text)
+                    : (DateTime?)null;
 
             var todo = new Todo()
             {
+                Id = long.Parse(id),
                 Message = message,
                 IsDone = false,
                 NotifictionTime = notifictionTime,
             };
 
-            var fsql = DB.Sqlite;
-
-            fsql.Update<Todo>()
+            _fsql.Update<Todo>()
                 .SetSource(todo)
                 .UpdateColumns(r => new { r.Message, r.NotifictionTime, r.IsDone })
                 .ExecuteAffrows();
@@ -83,18 +103,15 @@ namespace winforms_netframework
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            var fsql = DB.Sqlite;
-
             var checkedItems = checkedListTodo.CheckedItems;
             if (checkedItems.Count == 0)
             {
                 MessageBox.Show("请选中要删除的待办事项", "提示", MessageBoxButtons.OK);
                 return;
             }
-            fsql.Delete<Todo>(checkedItems).ExecuteAffrows();
+            _fsql.Delete<Todo>(checkedItems).ExecuteAffrows();
             GetTodoList();
             MessageBox.Show("删除成功");
-
         }
 
         private void btnSelectAll_Click(object sender, EventArgs e)
@@ -124,5 +141,50 @@ namespace winforms_netframework
         {
             GetTodoList();
         }
+
+        private void btnFinish_Click(object sender, EventArgs e)
+        {
+            var checkedItems = checkedListTodo.CheckedItems;
+            if (checkedItems.Count == 0)
+            {
+                MessageBox.Show("请选中要完成的待办事项", "提示", MessageBoxButtons.OK);
+                return;
+            }
+
+            var todolist = new List<Todo>();
+            foreach (var item in checkedItems)
+            {
+                Todo todo = (Todo)item;
+                todo.IsDone = true;
+                todo.DoneTime = DateTime.Now;
+                todolist.Add(todo);
+            }
+            _fsql.Update<Todo>()
+                .SetSource(todolist)
+                .UpdateColumns(u => new { u.IsDone, u.DoneTime })
+                .ExecuteAffrows();
+            GetTodoList();
+            MessageBox.Show("任务成功");
+        }
+
+        private void checkedListTodo_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var checkedItem = checkedListTodo.SelectedItem;
+            if (checkedItem == null) return;
+            Todo todo = (Todo)checkedItem;
+            hideId.Text = todo.Id.ToString();
+            txtBoxTodo.Text = todo.Message.ToString();
+            if (todo.NotifictionTime != null)
+            {
+                dateNotifictionTime.Checked = true;
+                dateNotifictionTime.Text = todo.NotifictionTime.ToString();
+            }
+            else
+            {
+                dateNotifictionTime.Checked = false;
+                dateNotifictionTime.Text = null;
+            }
+        }
+
     }
 }
