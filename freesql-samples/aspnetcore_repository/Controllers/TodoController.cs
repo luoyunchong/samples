@@ -1,13 +1,14 @@
 using aspnetcore_repository.DTO;
 using aspnetcore_repository.Models;
 using FreeSql.Internal.Model;
+using IGeekFan.FreeKit.Extras.Extensions;
 using IGeekFan.FreeKit.Extras.FreeSql;
 using Microsoft.AspNetCore.Mvc;
 
 namespace aspnetcore_repository.Controllers
 {
     /// <summary>
-    /// 2.基于审计类的FreeSql仓储
+    /// 2.基于审计仓储类（IAuditBaseRepository）的实现 
     /// </summary>
     [ApiController]
     //[Authorize]
@@ -29,9 +30,12 @@ namespace aspnetcore_repository.Controllers
         /// <param name="pagingInfo"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IResult> GetPageAsync([FromQuery] BasePagingInfo pagingInfo)
+        public async Task<IResult> GetPageAsync([FromQuery] QueryTodo pagingInfo)
         {
-            List<Todo> data = await _repository.Select.Page(pagingInfo).ToListAsync();
+            List<Todo> data = await _repository.Select
+                .WhereIf(pagingInfo.Message.IsNotNullOrWhiteSpace(), r => r.Message.Contains(pagingInfo.Message))
+                .Page(pagingInfo)
+                .ToListAsync();
 
             return Results.Ok(new { data = data, count = pagingInfo.Count });
         }
@@ -43,9 +47,9 @@ namespace aspnetcore_repository.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("{id}")]
-        public IResult Get(int id)
+        public async Task<IResult> GetAsync(int id)
         {
-            Todo todo = _repository.Get(id);
+            Todo todo =await _repository.GetAsync(id);
             _logger.LogInformation($"Todo get success");
             return Results.Ok(todo);
         }
@@ -56,10 +60,10 @@ namespace aspnetcore_repository.Controllers
         /// <param name="createTodo"></param>
         /// <returns></returns>
         [HttpPost]
-        public IResult Create([FromBody] CreateTodo createTodo)
+        public async Task<IResult> Create([FromBody] CreateTodo createTodo)
         {
             Todo todo = new Todo { IsDone = createTodo.IsDone, Message = createTodo.Message, NotifictionTime = createTodo.NotifictionTime };
-            _repository.Insert(todo);
+            await _repository.InsertAsync(todo);
             _logger.LogInformation($"todo crate success");
             return Results.Ok(todo);
         }
@@ -70,7 +74,7 @@ namespace aspnetcore_repository.Controllers
         /// <param name="updateTodo"></param>
         /// <returns></returns>
         [HttpPut]
-        public IResult Update([FromBody] UpdateTodo updateTodo)
+        public async Task<IResult> Update([FromBody] UpdateTodo updateTodo)
         {
             Todo todo = _repository.Get(updateTodo.Id);
             if (todo == null)
@@ -80,7 +84,7 @@ namespace aspnetcore_repository.Controllers
             todo.Message = updateTodo.Message;
             todo.IsDone = updateTodo.IsDone;
             todo.NotifictionTime = updateTodo.NotifictionTime;
-            _repository.Update(todo);
+            await _repository.UpdateAsync(todo);
             _logger.LogInformation($"todo update success");
             return Results.Ok(todo);
         }
@@ -91,9 +95,9 @@ namespace aspnetcore_repository.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete]
-        public IResult Delete(int id)
+        public async Task<IResult> Delete(int id)
         {
-            int row = _repository.Delete(id);
+            int row =await _repository.DeleteAsync(id);
             _logger.LogInformation($"todo delete success");
             return Results.Ok(row);
         }

@@ -14,6 +14,7 @@ namespace aspnetcore_dbcontext
             {
                 IFreeSql fsql = new FreeSqlBuilder()
                     .UseConnectionString(DataType.Sqlite,c.GetConnectionString("Sqlite"))
+                    //.UseConnectionString(DataType.MySql,c.GetConnectionString("MySql"))
 #if DEBUG
                     .UseAutoSyncStructure(true)
 #endif
@@ -37,8 +38,8 @@ namespace aspnetcore_dbcontext
                 };
             });
 
-            free.CodeFirst.SyncStructure(typeof(Todo));//Todo 为要同步的实体类
-            free.CodeFirst.SyncStructure(typeof(DbContext.EntityChangeReport.ChangeInfo));//Todo 为要同步的实体类
+            free.CodeFirst.ApplyConfigurationsFromAssembly(typeof(TodoConfiguration).Assembly);
+            free.CodeFirst.SyncStructure(typeof(Todo));
             services.AddFreeDbContext<TodoDbContext>(options => options.UseFreeSql(free));
 
             return services;

@@ -8,13 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FreeSql" Version="3.2.666" />
-    <PackageReference Include="FreeSql.DbContext" Version="3.2.666" />
-    <PackageReference Include="FreeSql.Provider.MySqlConnector" Version="3.2.666" />
-    <PackageReference Include="FreeSql.Provider.Oracle" Version="3.2.666" />
-    <PackageReference Include="FreeSql.Provider.PostgreSQL" Version="3.2.666" />
-    <PackageReference Include="FreeSql.Provider.Sqlite" Version="3.2.666" />
-    <PackageReference Include="FreeSql.Provider.SqlServer" Version="3.2.666" />
+    <PackageReference Include="FreeSql" Version="3.2.669" />
+    <PackageReference Include="FreeSql.DbContext" Version="3.2.669" />
+    <PackageReference Include="FreeSql.Provider.MySqlConnector" Version="3.2.669" />
+    <PackageReference Include="FreeSql.Provider.Oracle" Version="3.2.669" />
+    <PackageReference Include="FreeSql.Provider.PostgreSQL" Version="3.2.669" />
+    <PackageReference Include="FreeSql.Provider.Sqlite" Version="3.2.669" />
+    <PackageReference Include="FreeSql.Provider.SqlServer" Version="3.2.669" />
     <PackageReference Include="IGeekFan.FreeKit.Extras" Version="0.0.515" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>

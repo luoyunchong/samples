@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace aspnetcore_dbcontext.Controllers
 {
+    /// <summary>
+    /// 基于DbContext实现
+    /// </summary>
     [ApiController]
     [Route("[controller]")]
     public class TodoController : ControllerBase
@@ -26,9 +29,13 @@ namespace aspnetcore_dbcontext.Controllers
         /// <param name="pagingInfo"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IResult> GetPageAsync([FromQuery] BasePagingInfo pagingInfo)
+        public async Task<IResult> GetPageAsync([FromQuery] QueryTodo pagingInfo)
         {
-            List<Todo> data = await _dbContext.Todos.Select.Page(pagingInfo).ToListAsync();
+            List<Todo> data = await _dbContext.Todos
+                .Select
+                .WhereIf(!string.IsNullOrWhiteSpace(pagingInfo.Message), r => r.Message.Contains(pagingInfo.Message))
+                .Page(pagingInfo)
+                .ToListAsync();
 
             return Results.Ok(new { data = data, count = pagingInfo.Count });
         }

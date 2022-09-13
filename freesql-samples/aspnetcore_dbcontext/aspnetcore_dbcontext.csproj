@@ -8,9 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FreeSql.DbContext" Version="3.2.666" />
-    <PackageReference Include="FreeSql.Provider.Sqlite" Version="3.2.666" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+    <PackageReference Include="FreeSql.DbContext" Version="3.2.669" />
+    <PackageReference Include="FreeSql.Provider.Sqlite" Version="3.2.669" />
+    <PackageReference Include="FreeSql.Provider.MySqlConnector" Version="3.2.669" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
 </Project>
