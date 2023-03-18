@@ -8,7 +8,7 @@ namespace aspnetcore_repository
     {
         public static IServiceCollection AddFreeSql(this IServiceCollection services, IConfiguration c)
         {
-            services.Configure<UnitOfWorkDefualtOptions>(r =>
+            services.Configure<UnitOfWorkDefaultOptions>(r =>
             {
                 r.IsolationLevel = System.Data.IsolationLevel.ReadCommitted;
                 r.Propagation = Propagation.Required;
