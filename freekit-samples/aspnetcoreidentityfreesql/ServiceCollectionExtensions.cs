@@ -53,6 +53,7 @@ public static class ServiceCollectionExtensions
 
         #region Hiddeen
         //Web API的写法，不引用  <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.7" />
+        //services.AddAuthentication();
         //services.AddIdentityCore<AppUser>(o =>
         //{
         //    o.SignIn.RequireConfirmedEmail = false;

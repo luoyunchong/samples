@@ -8,7 +8,7 @@ builder.Services.AddFreeSqlIdentity(builder.Configuration);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwagger(builder.Configuration);
 
 var app = builder.Build();
 

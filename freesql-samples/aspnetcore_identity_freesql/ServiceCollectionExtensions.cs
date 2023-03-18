@@ -3,7 +3,11 @@ using aspnetcore_identity_freesql.Models;
 using FreeSql;
 using FreeSql.Internal;
 using IGeekFan.AspNetCore.Identity.FreeSql;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.OpenApi.Models;
 
 namespace aspnetcore_identity_freesql
 {
@@ -45,6 +49,14 @@ namespace aspnetcore_identity_freesql
                             }));
             }
 
+            services.AddAuthentication(o =>
+            {
+                o.DefaultScheme = IdentityConstants.ApplicationScheme;
+                o.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+            })
+            .AddIdentityCookies(o => { });
+            //.AddJwtBearer(IdentityConstants.ApplicationScheme);
+            
             services.AddIdentityCore<AppUser>(o =>
             {
                 o.SignIn.RequireConfirmedEmail = false;
@@ -55,6 +67,7 @@ namespace aspnetcore_identity_freesql
             .AddFreeSqlStores<AppIdentityDbContext>()
             .AddDefaultTokenProviders();
 
+            //
             // 如果是MVC 另外安装包 <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.7" /> 使用AddDefaultIdentity方法
             // services.AddDefaultIdentity<AppUser>(options => options.SignIn.RequireConfirmedAccount = true).AddRoles<AppRole>()
             //        .AddFreeSqlStores<AppIdentityDbContext>().AddDefaultTokenProviders();
@@ -87,6 +100,43 @@ namespace aspnetcore_identity_freesql
                 );
             }
             return serviceProvider;
+        }
+
+        public static IServiceCollection AddSwagger(this IServiceCollection services, IConfiguration c)
+        {
+            services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "aspnetcore_identity_freesql - HTTP API",
+                    Version = "v1",
+                    Description = "The aspnetcore_identity_freesql Microservice HTTP API. This is a Data-Driven/CRUD microservice sample"
+                });
+                options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "aspnetcore_identity_freesql.xml"), true);
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement()
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference()
+                        {
+                            Id = "Bearer",
+                            Type = ReferenceType.SecurityScheme
+                        }
+                    },
+                    Array.Empty<string>()
+                }
+            });
+                options.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
+                {
+                    Description = "JWT授权(数据将在请求头中进行传输) 参数结构: \"Authorization: Bearer {token}\"",
+                    Name = "Authorization", //jwt默认的参数名称
+                    In = ParameterLocation.Header, //jwt默认存放Authorization信息的位置(请求头中)
+                    Type = SecuritySchemeType.ApiKey
+                });
+            });
+
+            return services;
         }
     }
 }

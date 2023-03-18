@@ -2,16 +2,16 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net6.0-windows</TargetFramework>
+    <TargetFramework>net7.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FreeSql" Version="3.2.669" />
-    <PackageReference Include="FreeSql.DbContext" Version="3.2.669" />
-    <PackageReference Include="FreeSql.Provider.Sqlite" Version="3.2.669" />
+    <PackageReference Include="FreeSql" Version="3.2.692" />
+    <PackageReference Include="FreeSql.DbContext" Version="3.2.692" />
+    <PackageReference Include="FreeSql.Provider.Sqlite" Version="3.2.692" />
   </ItemGroup>
 
 </Project>
