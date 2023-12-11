@@ -2,15 +2,15 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FreeSql" Version="3.2.692" />
-    <PackageReference Include="FreeSql.DbContext" Version="3.2.692" />
-    <PackageReference Include="FreeSql.Provider.Sqlite" Version="3.2.692" />
+    <PackageReference Include="FreeSql" Version="3.2.805" />
+    <PackageReference Include="FreeSql.DbContext" Version="3.2.805" />
+    <PackageReference Include="FreeSql.Provider.Sqlite" Version="3.2.805" />
   </ItemGroup>
 
 </Project>

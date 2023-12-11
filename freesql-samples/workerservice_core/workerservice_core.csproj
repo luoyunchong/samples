@@ -1,16 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk.Worker">
 
 	<PropertyGroup>
-		<TargetFramework>net7.0</TargetFramework>
+		<TargetFramework>net8.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<UserSecretsId>dotnet-workerservice_core-6f9316cf-9018-4136-bb93-0471de53a2dc</UserSecretsId>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
-		<PackageReference Include="FreeSql" Version="3.2.692" />
-		<PackageReference Include="FreeSql.DbContext" Version="3.2.692" />
-		<PackageReference Include="FreeSql.Provider.Sqlite" Version="3.2.692" />
+		<PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
+		<PackageReference Include="FreeSql" Version="3.2.805" />
+		<PackageReference Include="FreeSql.DbContext" Version="3.2.805" />
+		<PackageReference Include="FreeSql.Provider.Sqlite" Version="3.2.805" />
 	</ItemGroup>
 </Project>
