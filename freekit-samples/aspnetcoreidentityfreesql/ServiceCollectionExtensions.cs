@@ -11,7 +11,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddFreeSqlIdentity(this IServiceCollection services, IConfiguration configuration)
     {
         #region 配置FreeSql DbContext 默认现在是mysql
-        //var connectionString = configuration.GetConnectionString("SqlitetConnection") ?? throw new InvalidOperationException("Connection string 'SqlitetConnection' not found.");
+        //var connectionString = configuration.GetConnectionString("Sqlite") ?? throw new InvalidOperationException("Connection string 'SqlitetConnection' not found.");
         //var connectionString = configuration.GetConnectionString("SqlServer") ?? throw new InvalidOperationException("Connection string 'SqlServer' not found.");
 
         var connectionString = configuration.GetConnectionString("MySql") ?? throw new InvalidOperationException("Connection string 'MySql' not found.");
