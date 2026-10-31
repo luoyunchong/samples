@@ -1,15 +1,15 @@
-[English](README.en.md) | **简体中文**
+**English** | [简体中文](README.zh-CN.md)
 
-# samples 示例程序
+# Sample projects
 
 ## freesql-samples
 
-在不同的.NET环境、框架下使用freesql的简单示例程序，比如sqlite的加密，console控制台，console 配合容器，.NET Core的Winform/.NET Framework winform等
+Simple examples of using FreeSql with different .NET environments and frameworks, including SQLite encryption, console applications, console applications with a container, and WinForms on .NET Core and .NET Framework.
 
 ## freekit-samples
 
-在freesql的基础上扩展了freesql的操作，比如freesql下的aspnetcore identity实现，extras中的一些基于aop+特性的事务跨方法异步异步操作，审计，登录人信息等
+Examples extending FreeSql, including an ASP.NET Core Identity implementation, attribute-based AOP transactions across asynchronous methods, auditing, and current-user information.
 
-### aspnetcore identity freesql
+### ASP.NET Core Identity with FreeSql
 
-### igeekfan.freekit.extrs
+### IGeekFan.FreeKit.Extras
