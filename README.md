@@ -1,3 +1,5 @@
+[English](README.en.md) | **简体中文**
+
 # samples 示例程序
 
 ## freesql-samples
